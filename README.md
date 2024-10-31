@@ -7,9 +7,9 @@
 Variation clusters are loosely defined as contiguous regions that contain some
 variation in a given set of genomes. The `vclust` method is designed to locate
 variation clusters around an input set of seed regions using variation extracted
-from PacBio HiFi whole-genome sequencing samples.
+from PacBio HiFi whole-genome sequencing data.
 
-Authors: [Egor Dolzhenko](https://github.com/egor-dolzhenko)
+Authors: [Egor Dolzhenko](mailto:edolzhenko@pacificbiosciences.com)
 
 ## Installation and usage
 
@@ -30,13 +30,14 @@ Once installed, `vclust` can be run like so:
 
 where
 
-* `genome.fa` is the reference genome (the same reference genome as used for read alignment)
-* `bams/*.bam` paths to the aligned BAM files
-* `regions.bed` a BED file with regions to profile
-* `extended_regions.bed` a BED file with the extended regions
+* `genome.fa` is the reference genome (the same reference genome as used for
+    read alignment)
+* `bams/*.bam` paths to the aligned PacBio HiFi BAM files
+* `regions.bed` a BED file with seed regions to extend
+* `extended_regions.txt` an output file with the extended regions
 
-The input file `regions.bed` is expected to contain the coordinates and the
-identifier of each region to be profiled.
+The input file `regions.bed` is expected to contain coordinates and identifiers
+of the regions to be profiled.
 
 ```csv
 chr1    57367043        57367119        region1
@@ -48,11 +49,11 @@ chr11   66744821        66744850        region6
 chr11   119206289       119206322       region7
 ```
 
-The output file contains region identifiers (column 1), coordinates of the
-original input regions (column 2), input regions' start / end extension lengths
-(columns 3,4), and coordinates of the corresponding extended regions (column 5).
-If `vclust` is unable to extend a given region (due to, say, the lack of read
-coverage), the third column is set to `NA`.
+The output file `extended_regions.txt` contains region identifiers (column 1),
+coordinates of the original input regions (column 2), input regions' start / end
+extension lengths (columns 3,4), and coordinates of the corresponding extended
+regions (column 5). If `vclust` is unable to extend a given region (due to, say,
+the lack of read coverage), the third column is set to `NA`.
 
 ```csv
 region1 chr1:57367043-57367119      0    0       chr1:57367043-57367119
@@ -66,8 +67,8 @@ region7 chr11:119206289-119206322   0    0       chr11:119206289-119206322
 
 In the example above, `vclust` did not identify significant variation around
 `region1` and hence the extension lengths were set to 0. The reported extended
-region in column 5 is the original region itself. On the the other hand, the
-start of `region4` was extended by 72 bps, expanding coordinates of the original
+region in column 5 is the original region itself. On the other hand, the start
+of `region4` was extended by 72 bps, expanding coordinates of the original
 region from `chr10:79826383-79826404` to `chr10:79826311-79826404`.
 
 ## Citation
