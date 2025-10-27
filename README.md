@@ -71,6 +71,22 @@ region in column 5 is the original region itself. On the other hand, the start
 of `region4` was extended by 72 bps, expanding coordinates of the original
 region from `chr10:79826383-79826404` to `chr10:79826311-79826404`.
 
+## Variation plots
+
+We also provide [a script for creating variation plots](utils/variation_plot.py)
+(see "Citation" for details). The simplest way to run this script is with [uv](https://github.com/astral-sh/uv) project manager like so:
+
+```bash
+uv run utils/variation_plot.py --reads samples/*.bam --region chrX:147912050-147912110 --padding 150 --image FMR1.png
+```
+
+where `--reads` specifies the paths to all BAM files you'd like to visualize,
+`--region` specifies the region of interest, `--padding` is the amount of sequence
+around the region of interest to visualize, `--image` is the path to the output image.
+
+This is what the resulting plot looks like:
+![FMR1 variation plot](docs/images/FMR1.png)
+
 ## Citation
 
 vclust is described in the Methods section of this paper:
