@@ -71,6 +71,10 @@ region in column 5 is the original region itself. On the other hand, the start
 of `region4` was extended by 72 bps, expanding coordinates of the original
 region from `chr10:79826383-79826404` to `chr10:79826311-79826404`.
 
+`vclust` also includes an optional parameter (`--prior-vc <value>`) that sets
+the prior probability that a region belongs to a variation cluster. This
+parameter makes region extension more or less permissive.
+
 ## Variation plots
 
 We also provide [a script for creating variation plots](utils/variation_plot.py)
