@@ -45,11 +45,17 @@ pub struct CliParams {
     #[clap(value_name = "REGIONS")]
     #[arg(value_parser = check_file_exists)]
     pub repeats_path: PathBuf,
+
+    #[clap(long = "prior-vc")]
+    #[clap(help = "Prior probability that a region is a part of a variation cluster")]
+    #[clap(value_name = "PRIOR_VC")]
+    #[clap(default_value = "0.4220095")]
+    pub prior_vc: f64,
 }
 
 fn main() -> Result<(), String> {
     let args = CliParams::parse();
-    let loci = load_loci(args.repeats_path)?;
+    let loci = load_loci(args.repeats_path, args.prior_vc)?;
     // TODO: Validate parameters
 
     let mut bams = Vec::new();

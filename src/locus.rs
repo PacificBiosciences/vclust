@@ -10,9 +10,10 @@ pub struct Locus {
     pub start: i64,
     pub end: i64,
     pub name: String,
+    pub prior_vc: f64,
 }
 
-pub fn load_loci(path: PathBuf) -> Result<Vec<Locus>, String> {
+pub fn load_loci(path: PathBuf, prior_vc: f64) -> Result<Vec<Locus>, String> {
     let file = File::open(path).map_err(|e| e.to_string())?;
     let reader = BufReader::new(file);
     let mut loci = Vec::new();
@@ -35,6 +36,7 @@ pub fn load_loci(path: PathBuf) -> Result<Vec<Locus>, String> {
             start,
             end,
             name,
+            prior_vc,
         });
     }
 
