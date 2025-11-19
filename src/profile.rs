@@ -16,16 +16,17 @@ pub fn get_profile(bam: &mut IndexedReader, region: Region) -> Result<Prof, Stri
     let mut alts = vec![0; prof_len];
     bam.fetch(region).map_err(|e| e.to_string())?;
 
-    for (index, rec) in bam::Read::records(bam).enumerate() {
+    let mut coverage = 0;
+    for rec in bam::Read::records(bam) {
         let rec = rec.map_err(|e| e.to_string())?;
 
         if rec.is_secondary() || rec.is_supplementary() || rec.mapq() < 50 {
             continue;
         }
         update_profs(rec, &mut covs, &mut alts, region);
+        coverage += 1;
 
-        // Absolute max depth
-        if index >= 200 {
+        if coverage >= 200 {
             return Err("High depth".to_string());
         }
     }
