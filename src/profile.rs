@@ -26,7 +26,7 @@ pub fn get_profile(bam: &mut IndexedReader, region: Region) -> Result<Prof, Stri
 
         // Absolute max depth
         if index >= 200 {
-            return Err("High depth".to_string());
+            return Err("DEPTH".to_string());
         }
     }
 
