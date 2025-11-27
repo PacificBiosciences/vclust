@@ -5,38 +5,45 @@ use itertools::Itertools;
 use logaddexp::LogAddExp;
 use rust_htslib::bam::IndexedReader;
 
-pub fn get_extension_offsets(locus: &Locus, bams: &mut Vec<IndexedReader>) -> Option<(i64, i64)> {
-    let region = extend_region(locus).ok()?;
+pub fn get_extension_offsets(
+    locus: &Locus,
+    bams: &mut Vec<IndexedReader>,
+) -> Result<(i64, i64), String> {
+    let region = extend_region(locus)?;
 
     let mut profs = Vec::new();
     for bam in bams {
-        let prof = get_profile(bam, region).ok()?;
+        let prof = get_profile(bam, region)?;
         profs.push(prof);
     }
 
     let prof = merge(&profs);
 
     if prof.depth < 5.0 || prof.depth > 150.0 {
-        return None;
+        return Err("DEPTH".to_string());
     }
 
     let alts = discretize(&prof.alts);
 
     let span = (RADIUS, RADIUS + locus.end - locus.start);
-    let span = extend_to_ref_flanks(&alts, span, 150, locus.prior_vc)?;
-    let span = extend_to_ref_flanks(&alts, span, 50, locus.prior_vc)?;
-    let span = extend_to_ref_flanks(&alts, span, 25, locus.prior_vc)?;
-    let span = extend_to_ref_flanks(&alts, span, 10, locus.prior_vc)?;
+    let span =
+        extend_to_ref_flanks(&alts, span, 150, locus.prior_vc).ok_or("EXTENSION".to_string())?;
+    let span =
+        extend_to_ref_flanks(&alts, span, 50, locus.prior_vc).ok_or("EXTENSION".to_string())?;
+    let span =
+        extend_to_ref_flanks(&alts, span, 25, locus.prior_vc).ok_or("EXTENSION".to_string())?;
+    let span =
+        extend_to_ref_flanks(&alts, span, 10, locus.prior_vc).ok_or("EXTENSION".to_string())?;
 
     let lf_offset = RADIUS - span.0;
     let rf_offset = span.1 - (RADIUS + locus.end - locus.start);
 
-    Some((lf_offset, rf_offset))
+    Ok((lf_offset, rf_offset))
 }
 
 fn extend_region(locus: &Locus) -> Result<(&str, i64, i64), String> {
     if locus.start < RADIUS {
-        Err("Locus too close to chromosome start".to_string())
+        Err("EXTENSION".to_string())
     } else {
         Ok((&locus.chrom[..], locus.start - RADIUS, locus.end + RADIUS))
     }
